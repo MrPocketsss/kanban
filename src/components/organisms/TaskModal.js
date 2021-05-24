@@ -12,7 +12,7 @@ import { useStyles } from './styles'
 import { CloseIconButton, EditableText, TaskActivity, TaskDescription } from '../atoms'
 import { AddChecklist, AddDeadline, AddLink } from '../molecules'
 
-export default function TaskModal({ columnId, darkMode, task }) {
+export default function TaskModal({ close, columnId, darkMode, task }) {
   const classes = useStyles()
   const dispatch = useDispatch()
 
@@ -36,7 +36,7 @@ export default function TaskModal({ columnId, darkMode, task }) {
   return (
     <Card className={classes.modalContainer}>
       <CardHeader
-        action={<CloseIconButton />}
+        action={<CloseIconButton handleClick={close} />}
         avatar={<AssignmentIcon />}
         title={<EditableText startText={task.title} submitCallback={handleTaskTitleUpdate} />}
         subheader={`From ${projectName} - ${columnName}`}

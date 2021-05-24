@@ -37,7 +37,7 @@ export default function Task({ color, columnId, darkMode, index, taskId }) {
   //prettier-ignore
   const modalBody = (
     <div>
-      <TaskModal columnId={columnId} darkMode={darkMode} task={task} />
+      <TaskModal columnId={columnId} darkMode={darkMode} task={task} close={handleCloseModal} />
     </div>
   )
 
