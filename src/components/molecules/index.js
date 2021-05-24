@@ -5,6 +5,7 @@ import ColumnMenu from './ColumnMenu'
 import DesktopHeaderSection from './DesktopHeaderSection'
 import MobileHeaderSection from './MobileHeaderSection'
 import ProjectMenu from './ProjectMenu'
+import TaskLists from './TaskLists'
 
 export {
   AddChecklist,
@@ -14,4 +15,5 @@ export {
   DesktopHeaderSection,
   MobileHeaderSection,
   ProjectMenu,
+  TaskLists,
 }

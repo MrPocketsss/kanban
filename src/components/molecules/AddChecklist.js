@@ -2,12 +2,12 @@
 import React, { useState } from 'react'
 
 // import modules
-import { Card, CardContent, CardHeader, Chip, Divider, Menu } from '@material-ui/core'
+import { Chip, Menu } from '@material-ui/core'
 import ListIcon from '@material-ui/icons/List'
 
 // import project files
 import { useStyles } from './styles'
-import { CloseIconButton, ProjectInput } from '../atoms'
+import { AddChecklistCard } from '../atoms'
 
 export default function AddChecklist({ taskId }) {
   const classes = useStyles()
@@ -24,10 +24,6 @@ export default function AddChecklist({ taskId }) {
     setMenuOpen(false)
   }
 
-  const handleTitleSubmit = (newTitle) => {
-    console.log(newTitle)
-  }
-
   return (
     <>
       <Chip avatar={<ListIcon />} label='Checklist' onClick={handleMenuOpen} />
@@ -40,13 +36,9 @@ export default function AddChecklist({ taskId }) {
         onClose={handleMenuClose}
         transformOrigin={{ vertical: -95, horizontal: 100 }}
       >
-        <Card className={classes.actionMenuItem}>
-          <CardHeader action={<CloseIconButton />} title='Add checklist' />
-          <Divider />
-          <CardContent>
-            <ProjectInput placeholder='Checklist title' submitCallback={handleTitleSubmit} />
-          </CardContent>
-        </Card>
+        <div>
+          <AddChecklistCard close={handleMenuClose} taskId={taskId} />
+        </div>
       </Menu>
     </>
   )

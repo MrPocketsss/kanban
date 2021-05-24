@@ -10,7 +10,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment'
 import { updateTaskTitle } from '../../features/projects/taskSlice'
 import { useStyles } from './styles'
 import { CloseIconButton, EditableText, TaskActivity, TaskDescription } from '../atoms'
-import { AddChecklist, AddDeadline, AddLink } from '../molecules'
+import { AddChecklist, AddDeadline, AddLink, TaskLists } from '../molecules'
 
 export default function TaskModal({ close, columnId, darkMode, task }) {
   const classes = useStyles()
@@ -45,6 +45,7 @@ export default function TaskModal({ close, columnId, darkMode, task }) {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={9} className={classes.taskModalContainer}>
             <TaskDescription taskId={task.id} />
+            {task.list ? <TaskLists list={task.list} taskId={task.id} /> : null}
             <TaskActivity activities={task.activity} darkMode={darkMode} />
           </Grid>
           <Grid item xs>
