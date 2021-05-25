@@ -13,7 +13,9 @@ export default function TaskDescription({ taskId }) {
   const classes = useStyles()
   const dispatch = useDispatch()
 
-  const description = useSelector((state) => state.tasks[taskId].description)
+  const description = useSelector(
+    (state) => state.tasks.find((task) => task.id === taskId).description
+  )
 
   const [text, setText] = useState(description)
 

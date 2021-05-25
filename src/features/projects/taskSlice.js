@@ -17,14 +17,15 @@ const taskSlice = createSlice({
   reducers: {
     addChecklist: {
       reducer: (state, { payload: { taskId, checklist } }) => {
-        state[taskId].activity.splice(0, 0, {
+        const index = state.findIndex((task) => task.id === taskId)
+        state[index].activity.splice(0, 0, {
           content: [`Added list ${checklist.title}`],
           when: Date.now(),
         })
-        if (state[taskId].list) {
-          state[taskId].list.splice(0, 0, checklist)
+        if (state[index].list) {
+          state[index].list.splice(0, 0, checklist)
         } else {
-          state[taskId].list = [checklist]
+          state[index].list = [checklist]
         }
       },
       prepare: ({ taskId, checklistTitle }) => {
@@ -46,10 +47,14 @@ const taskSlice = createSlice({
     },
     addChecklistItem: {
       reducer: (state, { payload: { newItem, listId, taskId } }) => {
-        const itemIndex = state[taskId].list.findIndex((item) => item.id === listId)
-        state[taskId].list[itemIndex].items.push(newItem)
-        state[taskId].activity.slice(0, 0, {
-          content: [`Added item: ${newItem.title} to list: ${state[taskId].list[itemIndex].title}`],
+        const taskIndex = state.findIndex((task) => task.id === taskId)
+        const itemIndex = state[taskIndex].list.findIndex((item) => item.id === listId)
+
+        state[taskIndex].list[itemIndex].items.push(newItem)
+        state[taskIndex].activity.slice(0, 0, {
+          content: [
+            `Added item: ${newItem.title} to list: ${state[taskIndex].list[itemIndex].title}`,
+          ],
           when: Date.now(),
         })
       },
@@ -68,14 +73,16 @@ const taskSlice = createSlice({
     },
     addLink: {
       reducer: (state, { payload: { link, taskId } }) => {
-        state[taskId].activity.splice(0, 0, {
+        const index = state.findIndex((task) => task.id === taskId)
+
+        state[index].activity.splice(0, 0, {
           content: [`Added link ${link.description}`],
           when: Date.now(),
         })
-        if (state[taskId].links) {
-          state[taskId].links.push(link)
+        if (state[index].links) {
+          state[index].links.push(link)
         } else {
-          state[taskId].links = [link]
+          state[index].links = [link]
         }
       },
       prepare: ({ linkDescription, linkURL, taskId }) => {
@@ -93,7 +100,7 @@ const taskSlice = createSlice({
     },
     createTask: {
       reducer: (state, { payload: { column, project, task } }) => {
-        state[task.id] = task
+        state.push(task)
       },
       prepare: ({ column, project, titleName }) => {
         const id = cuid()
@@ -130,42 +137,55 @@ const taskSlice = createSlice({
       },
     },
     hideCompleted(state, { payload: { listIndex, taskId } }) {
-      state[taskId].list[listIndex].hideCompleted = !state[taskId].list[listIndex].hideCompleted
+      const index = state.findIndex((task) => task.id === taskId)
+
+      state[index].list[listIndex].hideCompleted = !state[index].list[listIndex].hideCompleted
     },
     markListItem(state, { payload: { itemIndex, listIndex, taskId } }) {
-      state[taskId].list[listIndex].items[itemIndex].completed =
-        !state[taskId].list[listIndex].items[itemIndex].completed
-      state[taskId].activity.splice(0, 0, {
+      const index = state.findIndex((task) => task.id === taskId)
+
+      state[index].list[listIndex].items[itemIndex].completed =
+        !state[index].list[listIndex].items[itemIndex].completed
+      state[index].activity.splice(0, 0, {
         content: [
-          `Marked ${state[taskId].list[listIndex].items[itemIndex].title} as ${state[taskId].list[listIndex].items[itemIndex].completed}`,
+          `Marked ${state[index].list[listIndex].items[itemIndex].title} as ${state[index].list[listIndex].items[itemIndex].completed}`,
         ],
         when: Date.now(),
       })
     },
     removeList(state, { payload: { listIndex, taskId } }) {
-      state[taskId].activity.splice(0, 0, {
-        content: [`Deleted list: ${state[taskId].list[listIndex].title}`],
+      const index = state.findIndex((task) => task.id === taskId)
+
+      state[index].activity.splice(0, 0, {
+        content: [`Deleted list: ${state[index].list[listIndex].title}`],
         when: Date.now(),
       })
-      state[taskId].list.splice(listIndex, 1)
+      state[index].list.splice(listIndex, 1)
     },
     updateTaskDescription(state, { payload: { description, taskId } }) {
-      state[taskId].activity.splice(0, 0, {
+      const index = state.findIndex((task) => task.id === taskId)
+
+      state[index].activity.splice(0, 0, {
         content: [`Updated description to: ${description}`],
         when: Date.now(),
       })
-      state[taskId].description = description
+      state[index].description = description
     },
     updateTaskTitle(state, { payload: { taskId, newTitle } }) {
-      state[taskId].activity.splice(0, 0, {
-        content: [`Updated name from ${state[taskId].title} to ${newTitle}`],
+      const index = state.findIndex((task) => task.id === taskId)
+
+      state[index].activity.splice(0, 0, {
+        content: [`Updated name from ${state[index].title} to ${newTitle}`],
         when: Date.now(),
       })
-      state[taskId].title = newTitle
+      state[index].title = newTitle
     },
   },
   extraReducers: {
     'projects/dropAll': (state) => ({}),
+    'projects/removeProject': (state, { payload: { taskIds } }) => {
+      state.filter((task) => !taskIds.include(task.id))
+    },
     'columns/editTaskOrder': (
       state,
       {
@@ -236,7 +256,8 @@ const taskSlice = createSlice({
         ]
       }
 
-      state[taskId].activity.splice(0, 0, { content, when: Date.now() })
+      const index = state.findIndex((task) => task.id === taskId)
+      state[index].activity.splice(0, 0, { content, when: Date.now() })
     },
   },
 })

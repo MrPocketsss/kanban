@@ -58,8 +58,8 @@ export default function Projects(props) {
     }
     // if you're dragging columns
     if (type === 'column') {
-      const startProject = projects[source.droppableId]
-      const endProject = projects[destination.droppableId]
+      const startProject = projects.find((project) => project.id === source.droppableId)
+      const endProject = projects.find((project) => project.id === destination.droppableId)
 
       dispatch(
         editColumnOrder({
@@ -74,16 +74,11 @@ export default function Projects(props) {
 
     // if you're dragging tasks
     if (type === 'task') {
-      const startColumn = columns[source.droppableId]
-      const endColumn = columns[destination.droppableId]
+      const startColumn = columns.find((column) => column.id === source.droppableId)
+      const endColumn = columns.find((column) => column.id === destination.droppableId)
 
-      const projectArray = Object.values(projects)
-      const startProject = projectArray.filter((project) =>
-        project.columnIds.includes(startColumn.id)
-      )[0]
-      const endProject = projectArray.filter((project) =>
-        project.columnIds.includes(endColumn.id)
-      )[0]
+      const startProject = projects.find((project) => project.columnIds.includes(startColumn.id))
+      const endProject = projects.find((project) => project.columnIds.includes(endColumn.id))
 
       dispatch(
         editTaskOrder({

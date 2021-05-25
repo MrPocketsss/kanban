@@ -50,7 +50,7 @@ export default function ColumnMenu({ columnId, projectId, title }) {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         id={menuId}
         keepMounted
-        transformOrigin={{ vertical: 0, horizontal: 65 }}
+        transformOrigin={{ vertical: -15, horizontal: 213 }}
         open={menuOpen}
         onClose={handleMenuClose}
       >

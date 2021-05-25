@@ -17,8 +17,10 @@ import Task from './Task'
 export default function Column({ color, columnId, darkMode, index, projectId }) {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const column = useSelector((state) => state.columns[columnId])
-  const project = useSelector((state) => state.projects.list[projectId])
+  const column = useSelector((state) => state.columns.find((column) => column.id === columnId))
+  const project = useSelector((state) =>
+    state.projects.list.find((project) => project.id === projectId)
+  )
 
   // sets the card style for the column
   const getProjectStyle = () => ({

@@ -15,7 +15,9 @@ const MAX_SLIDER = 360 // maximum value of HSL color hue
 export default function ColorPicker({ projectId }) {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const projectColor = useSelector((state) => state.projects.list[projectId].color.h)
+  const projectColor = useSelector(
+    (state) => state.projects.list.find((project) => project.id === projectId).color.h
+  )
 
   const handleSliderChange = (_event, newValue) => {
     dispatch(updateProjectColor({ projectId, newColor: newValue }))

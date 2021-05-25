@@ -56,7 +56,6 @@ export default function EditableText({ startText, submitCallback }) {
     setShowInput(true)
   }
   const handleSubmit = (event) => {
-    console.log('clicked: ', event)
     if (event.keyCode === 13) {
       const finalText = inputText
         .trim() // remove any extra spaces

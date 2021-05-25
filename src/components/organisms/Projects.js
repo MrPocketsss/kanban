@@ -18,7 +18,9 @@ import Column from './Column'
 export default function Projects({ darkMode, projectId, index }) {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const project = useSelector((state) => state.projects.list[projectId])
+  const project = useSelector((state) =>
+    state.projects.list.find((project) => project.id === projectId)
+  )
 
   // state to control the project card styling
   const [cardStyle, setCardStyle] = useState({

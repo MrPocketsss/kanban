@@ -7,7 +7,7 @@ const columnSlice = createSlice({
   reducers: {
     createColumn: {
       reducer: (state, { payload: { column } }) => {
-        state[column.id] = column
+        state.push(column)
       },
       prepare: ({ titleName, projectId }) => {
         const id = cuid()
@@ -25,27 +25,33 @@ const columnSlice = createSlice({
       state,
       { payload: { destinationIndex, endColumn, sourceIndex, startColumn, taskId } }
     ) {
+      const startIndex = state.findIndex((column) => column.id === startColumn.id)
+      const endIndex = state.findIndex((column) => column.id === endColumn.id)
+
       if (startColumn.id === endColumn.id) {
-        state[startColumn.id].taskIds.splice(sourceIndex, 1)
-        state[startColumn.id].taskIds.splice(destinationIndex, 0, taskId)
+        state[startIndex].taskIds.splice(sourceIndex, 1)
+        state[startIndex].taskIds.splice(destinationIndex, 0, taskId)
       } else {
-        state[startColumn.id].taskIds.splice(sourceIndex, 1)
-        state[endColumn.id].taskIds.splice(destinationIndex, 0, taskId)
+        state[startIndex].taskIds.splice(sourceIndex, 1)
+        state[endIndex].taskIds.splice(destinationIndex, 0, taskId)
       }
     },
     removeColumn(state, { payload: { columnId } }) {
-      const { [columnId]: value, ...withoutColumn } = state
-
-      state = withoutColumn
+      state.filter((column) => column.id !== columnId)
     },
     updateColumnTitle(state, { payload: { columnId, newTitle } }) {
-      state[columnId].title = newTitle
+      const index = state.findIndex((column) => column.id === columnId)
+      state[index].title = newTitle
     },
   },
   extraReducers: {
     'projects/dropAll': (state) => ({}),
+    'projects/removeProject': (state, { payload: { columnIds } }) => {
+      state.filter((column) => !columnIds.include(column.id))
+    },
     'tasks/createTask': (state, { payload: { column, task } }) => {
-      state[column.id].taskIds.splice(0, 0, task.id)
+      const index = state.findIndex((element) => element.id === column.id)
+      state[index].taskIds.splice(0, 0, task.id)
     },
   },
 })

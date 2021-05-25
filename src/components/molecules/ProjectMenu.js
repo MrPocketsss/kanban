@@ -2,7 +2,7 @@
 import React, { useCallback, useState } from 'react'
 
 // import modules
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Button, Divider, IconButton, Menu } from '@material-ui/core'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import MoreIcon from '@material-ui/icons/MoreVert'
@@ -13,10 +13,30 @@ import { removeProject } from '../../features/projects/projectSlice'
 import { createColumn } from '../../features/projects/columnSlice'
 import { ColorPicker, ProjectInput } from '../atoms'
 import useEventListener from '../../hooks/useEventListener'
+import { MenuItem } from '@material-ui/core'
 
 export default function ProjectMenu({ projectId, toggleCollapsed }) {
   const classes = useStyles()
   const dispatch = useDispatch()
+
+  // I need to gather all the columns and tasks related to the project, because
+  // when I delete the project, I need to delete all related columns and tasks
+  const columnIds = useSelector(
+    (state) => state.projects.list.find((project) => project.id === projectId).columnIds
+  )
+  const columns = useSelector((state) =>
+    state.columns.filter((column) => columnIds.includes(column.id))
+  )
+
+  const getTasks = () => {
+    let taskIds = []
+
+    if (columnIds.length > 0) {
+      columns.forEach((column) => {
+        if (column.taskIds.length > 0) taskIds = [...taskIds, ...column.taskIds]
+      })
+    }
+  }
 
   //menu functionality
   const [menuOpen, setMenuOpen] = useState(false)
@@ -44,11 +64,12 @@ export default function ProjectMenu({ projectId, toggleCollapsed }) {
   }
   // --Delete Button
   const handleDeleteProject = () => {
-    dispatch(removeProject({ projectId }))
+    const taskIds = getTasks()
+    dispatch(removeProject({ projectId, columnIds, taskIds }))
   }
 
   return (
-    <>
+    <div>
       <IconButton
         aria-label='show more'
         aria-haspopup='true'
@@ -62,18 +83,25 @@ export default function ProjectMenu({ projectId, toggleCollapsed }) {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         id={menuId}
         keepMounted
-        transformOrigin={{ vertical: 0, horizontal: 1320 }}
+        transformOrigin={{ vertical: -25, horizontal: 300 }}
         open={menuOpen}
         onClose={handleMenuClose}
+        disableAutoFocusItem
       >
-        <ProjectInput handleDone={handleCreateColumn} placeholder='New Column' />
+        <MenuItem>
+          <ProjectInput handleDone={handleCreateColumn} placeholder='New Column' />
+        </MenuItem>
         <Divider className={classes.divider} />
-        <ColorPicker projectId={projectId} />
+        <MenuItem>
+          <ColorPicker projectId={projectId} />
+        </MenuItem>
         <Divider className={classes.divider} />
-        <Button onClick={handleDeleteProject} fullWidth startIcon={<DeleteForeverIcon />}>
-          Delete Project
-        </Button>
+        <MenuItem>
+          <Button onClick={handleDeleteProject} fullWidth startIcon={<DeleteForeverIcon />}>
+            Delete Project
+          </Button>
+        </MenuItem>
       </Menu>
-    </>
+    </div>
   )
 }

@@ -1,5 +1,5 @@
 // import react modules
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 // import modules
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,18 +16,12 @@ export default function TaskModal({ close, columnId, darkMode, task }) {
   const classes = useStyles()
   const dispatch = useDispatch()
 
-  const columnName = useSelector((state) => state.columns[columnId].title)
-  const projects = useSelector((state) => state.projects.list)
-  const [projectName, setProjectName] = useState(null)
-
-  // continues to generate the current project's name for a given task any
-  // time the column or project updates
-  useEffect(() => {
-    const projectsArray = Object.entries(projects)
-    const name = projectsArray.filter((project) => project[1].columnIds.includes(columnId))[0][1]
-      .title
-    setProjectName(name)
-  }, [columnId, projects])
+  const columnName = useSelector(
+    (state) => state.columns.find((column) => column.id === columnId).title
+  )
+  const projectName = useSelector(
+    (state) => state.projects.list.find((project) => project.columnIds.includes(columnId)).title
+  )
 
   const handleTaskTitleUpdate = (newTitle) => {
     dispatch(updateTaskTitle({ taskId: task.id, newTitle }))

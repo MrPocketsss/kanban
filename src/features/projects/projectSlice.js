@@ -6,14 +6,13 @@ const projectSlice = createSlice({
   initialState: {},
   reducers: {
     dropAll(state) {
-      state.list = {}
+      state.list = []
       state.order = []
     },
     createProject: {
       reducer: (state, { payload }) => {
-        console.log('got payload: ', payload)
         state.order = [payload.id, ...state.order]
-        state.list[payload.id] = payload
+        state.list.push(payload)
       },
       prepare: (projectTitle) => {
         const id = cuid()
@@ -32,12 +31,15 @@ const projectSlice = createSlice({
       state,
       { payload: { columnId, destinationIndex, endProjectId, sourceIndex, startProjectId } }
     ) {
+      const startProjectIndex = state.list.findIndex((project) => project.id === startProjectId)
+      const endProjectIndex = state.list.findIndex((project) => project.id === endProjectId)
+
       if (startProjectId === endProjectId) {
-        state.list[startProjectId].columnIds.splice(sourceIndex, 1)
-        state.list[startProjectId].columnIds.splice(destinationIndex, 0, columnId)
+        state.list[startProjectIndex].columnIds.splice(sourceIndex, 1)
+        state.list[startProjectIndex].columnIds.splice(destinationIndex, 0, columnId)
       } else {
-        state.list[startProjectId].columnIds.splice(sourceIndex, 1)
-        state.list[endProjectId].columnIds.splice(destinationIndex, 0, columnId)
+        state.list[startProjectIndex].columnIds.splice(sourceIndex, 1)
+        state.list[endProjectIndex].columnIds.splice(destinationIndex, 0, columnId)
       }
     },
     editProjectOrder(state, { payload: { sourceIndex, destinationIndex, id } }) {
@@ -45,16 +47,16 @@ const projectSlice = createSlice({
       state.order.splice(destinationIndex, 0, id)
     },
     editProjectCollapsed(state, { payload: { projectId, isCollapsed } }) {
-      state.list[projectId].collapsed = isCollapsed
+      state.list.map((project) =>
+        project.id === projectId ? { ...project, collapsed: isCollapsed } : project
+      )
     },
     removeProject(state, { payload: { projectId } }) {
-      const { [projectId]: value, ...withoutProject } = state.list
-
-      state.list = withoutProject
-      state.order.splice(state.order.indexOf(projectId), 1)
+      state.list.filter((project) => project.id !== projectId)
     },
     updateProjectTitle(state, { payload: { projectId, newTitle } }) {
-      state.list[projectId].title = newTitle
+      const index = state.list.findIndex((project) => project.id === projectId)
+      state.list[index].title = newTitle
     },
     updateProjectColor(state, { payload: { projectId, newColor } }) {
       state.list[projectId].color = { ...state.list[projectId].color, h: newColor }
@@ -62,10 +64,18 @@ const projectSlice = createSlice({
   },
   extraReducers: {
     'columns/removeColumn': (state, { payload: { columnId, projectId } }) => {
-      state.list[projectId].columnIds.splice(state.list[projectId].columnIds.indexOf(columnId), 1)
+      state.list.map((project) =>
+        project.id === projectId
+          ? { ...project, columnIds: project.columnIds.filter((id) => id !== columnId) }
+          : project
+      )
     },
     'columns/createColumn': (state, { payload: { projectId, column } }) => {
-      state.list[projectId].columnIds.splice(0, 0, column.id)
+      state.list.map((project) =>
+        project.id === projectId
+          ? { ...project, columnIds: [column.id, ...project.columnIds] }
+          : project
+      )
     },
   },
 })

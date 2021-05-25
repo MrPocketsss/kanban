@@ -12,7 +12,7 @@ import TaskModal from './TaskModal'
 
 export default function Task({ color, columnId, darkMode, index, taskId }) {
   const classes = useStyles()
-  const task = useSelector((state) => state.tasks[taskId])
+  const task = useSelector((state) => state.tasks.find((task) => task.id === taskId))
 
   // handle the task styling
   const getTaskStyle = () => ({
