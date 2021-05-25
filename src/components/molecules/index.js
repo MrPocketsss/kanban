@@ -5,6 +5,7 @@ import ColumnMenu from './ColumnMenu'
 import DesktopHeaderSection from './DesktopHeaderSection'
 import MobileHeaderSection from './MobileHeaderSection'
 import ProjectMenu from './ProjectMenu'
+import TaskLinks from './TaskLinks'
 import TaskLists from './TaskLists'
 
 export {
@@ -15,5 +16,6 @@ export {
   DesktopHeaderSection,
   MobileHeaderSection,
   ProjectMenu,
+  TaskLinks,
   TaskLists,
 }

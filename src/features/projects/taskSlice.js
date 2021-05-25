@@ -21,8 +21,11 @@ const taskSlice = createSlice({
           content: [`Added list ${checklist.title}`],
           when: Date.now(),
         })
-        state[taskId].list = []
-        state[taskId].list.splice(0, 0, checklist)
+        if (state[taskId].list) {
+          state[taskId].list.splice(0, 0, checklist)
+        } else {
+          state[taskId].list = [checklist]
+        }
       },
       prepare: ({ taskId, checklistTitle }) => {
         const id = cuid()
@@ -59,6 +62,31 @@ const taskSlice = createSlice({
             newItem: { completed: false, id, title },
             listId,
             taskId,
+          },
+        }
+      },
+    },
+    addLink: {
+      reducer: (state, { payload: { link, taskId } }) => {
+        state[taskId].activity.splice(0, 0, {
+          content: [`Added link ${link.description}`],
+          when: Date.now(),
+        })
+        if (state[taskId].links) {
+          state[taskId].links.push(link)
+        } else {
+          state[taskId].links = [link]
+        }
+      },
+      prepare: ({ linkDescription, linkURL, taskId }) => {
+        return {
+          payload: {
+            taskId,
+            link: {
+              id: cuid(),
+              description: sanitizeText(linkDescription),
+              url: sanitizeText(linkURL),
+            },
           },
         }
       },
@@ -216,6 +244,7 @@ const taskSlice = createSlice({
 export const {
   addChecklist,
   addChecklistItem,
+  addLink,
   createTask,
   hideCompleted,
   markListItem,

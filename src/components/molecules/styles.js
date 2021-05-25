@@ -34,15 +34,7 @@ export const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
   projectMenu: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    display: 'flex',
-    flexFlow: 'column nowrap',
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: '0.5rem',
-    zIndex: 1,
   },
   projectMenuIcon: {
     position: 'relative',
@@ -58,5 +50,11 @@ export const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
+  },
+  taskModalContent: {
+    padding: '1rem',
+    marginBottom: '2rem',
+    backgroundColor:
+      theme.palette.type === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.2)',
   },
 }))

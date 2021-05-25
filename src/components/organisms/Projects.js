@@ -45,6 +45,10 @@ export default function Projects({ darkMode, projectId, index }) {
   const handleTitleUpdate = (newTitle) => {
     dispatch(updateProjectTitle({ projectId, newTitle }))
   }
+  const handleToggleCollapse = () => {
+    setCollapsed(false)
+    dispatch(editProjectCollapsed({ projectId, isCollapsed: false }))
+  }
 
   return (
     <Draggable draggableId={projectId} index={index}>
@@ -57,7 +61,7 @@ export default function Projects({ darkMode, projectId, index }) {
         >
           <Card elevation={8} style={cardStyle}>
             <CardHeader
-              action={<ProjectMenu projectId={projectId} toggleCollapsed={setCollapsed} />}
+              action={<ProjectMenu projectId={projectId} toggleCollapsed={handleToggleCollapse} />}
               avatar={
                 <IconButton
                   className={clsx(classes.expand, { [classes.expandOpen]: !collapsed })}

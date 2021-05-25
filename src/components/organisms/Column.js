@@ -46,7 +46,7 @@ export default function Column({ color, columnId, darkMode, index, projectId }) 
         >
           <Card elevation={8} style={getProjectStyle()}>
             <CardHeader
-              action={<ColumnMenu columnId={columnId} projectId={projectId} title={column.title} />}
+              action={<ColumnMenu columnId={columnId} projectId={projectId} />}
               title={<EditableText startText={column.title} submitCallback={handleTitleUpdate} />}
             />
             <Divider />

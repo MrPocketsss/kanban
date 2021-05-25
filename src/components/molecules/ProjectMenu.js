@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react'
 
 // import modules
 import { useDispatch } from 'react-redux'
-import { Button, ClickAwayListener, Divider, IconButton, Paper } from '@material-ui/core'
+import { Button, Divider, IconButton, Menu } from '@material-ui/core'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import MoreIcon from '@material-ui/icons/MoreVert'
 
@@ -20,12 +20,17 @@ export default function ProjectMenu({ projectId, toggleCollapsed }) {
 
   //menu functionality
   const [menuOpen, setMenuOpen] = useState(false)
-  const handleMenuOpen = () => {
+  const [anchorElement, setAnchorElement] = useState(null)
+  const menuId = `${projectId}-menu`
+
+  const handleMenuOpen = (event) => {
     setMenuOpen(true)
+    setAnchorElement(event.currentTarget)
     toggleCollapsed(false)
   }
   const handleMenuClose = () => {
     setMenuOpen(false)
+    setAnchorElement(null)
   }
   const handleKeyboardLeave = useCallback((event) => {
     if (event.key === 'Escape') setMenuOpen(false)
@@ -43,7 +48,7 @@ export default function ProjectMenu({ projectId, toggleCollapsed }) {
   }
 
   return (
-    <div className={classes.projectMenuIcon}>
+    <>
       <IconButton
         aria-label='show more'
         aria-haspopup='true'
@@ -52,19 +57,23 @@ export default function ProjectMenu({ projectId, toggleCollapsed }) {
       >
         <MoreIcon />
       </IconButton>
-      {menuOpen ? (
-        <ClickAwayListener onClickAway={handleMenuClose}>
-          <Paper className={classes.projectMenu} elevation={8}>
-            <ProjectInput handleDone={handleCreateColumn} placeholder='New Column' />
-            <Divider className={classes.divider} />
-            <ColorPicker projectId={projectId} />
-            <Divider className={classes.divider} />
-            <Button onClick={handleDeleteProject} fullWidth startIcon={<DeleteForeverIcon />}>
-              Delete Project
-            </Button>
-          </Paper>
-        </ClickAwayListener>
-      ) : null}
-    </div>
+      <Menu
+        anchorEl={anchorElement}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        id={menuId}
+        keepMounted
+        transformOrigin={{ vertical: 0, horizontal: 1320 }}
+        open={menuOpen}
+        onClose={handleMenuClose}
+      >
+        <ProjectInput handleDone={handleCreateColumn} placeholder='New Column' />
+        <Divider className={classes.divider} />
+        <ColorPicker projectId={projectId} />
+        <Divider className={classes.divider} />
+        <Button onClick={handleDeleteProject} fullWidth startIcon={<DeleteForeverIcon />}>
+          Delete Project
+        </Button>
+      </Menu>
+    </>
   )
 }

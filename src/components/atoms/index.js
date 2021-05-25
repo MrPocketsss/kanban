@@ -3,6 +3,8 @@ import ChecklistMenu from './ChecklistMenu'
 import CloseIconButton from './CloseIconButton'
 import ColorPicker from './ColorPicker'
 import EditableText from './EditableText'
+import ListItemLink from './ListItemLink'
+import Menu from './Menu'
 import NotificationsMenu from './NotificationsMenu'
 import ProjectInput from './ProjectInput'
 import Spacer from './Spacer'
@@ -17,6 +19,8 @@ export {
   CloseIconButton,
   ColorPicker,
   EditableText,
+  ListItemLink,
+  Menu,
   NotificationsMenu,
   ProjectInput,
   Spacer,
