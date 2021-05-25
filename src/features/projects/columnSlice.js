@@ -47,7 +47,7 @@ const columnSlice = createSlice({
   extraReducers: {
     'projects/dropAll': (state) => ({}),
     'projects/removeProject': (state, { payload: { columnIds } }) => {
-      state.filter((column) => !columnIds.include(column.id))
+      state.filter((column) => !columnIds.includes(column.id))
     },
     'tasks/createTask': (state, { payload: { column, task } }) => {
       const index = state.findIndex((element) => element.id === column.id)

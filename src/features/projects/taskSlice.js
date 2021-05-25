@@ -184,7 +184,7 @@ const taskSlice = createSlice({
   extraReducers: {
     'projects/dropAll': (state) => ({}),
     'projects/removeProject': (state, { payload: { taskIds } }) => {
-      state.filter((task) => !taskIds.include(task.id))
+      state.filter((task) => !taskIds.includes(task.id))
     },
     'columns/editTaskOrder': (
       state,
